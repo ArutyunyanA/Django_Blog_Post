@@ -1,0 +1,36 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <h1>Welcome, {{ request.user.username }}!</h1>
+    <p>Welcome to your dashboard. You can <a href="{% url 'account:edit' %}">edit your profile</a> or <a href="{% url 'account:password_change_form' %}">change your password</a>.</p>
+
+    {% if profile and profile.photo %}
+        <div>
+            <img src="{{ profile.photo.url }}" alt="Profile photo" style="width: 150px; height: 150px; border-radius: 50%;">
+        </div>
+    {% else %}
+        <p>You haven't uploaded a profile photo yet. <a href="{% url 'account:edit' %}">Upload one now!</a></p>
+    {% endif %}
+
+    <h2>Your Posts</h2>
+    
+    <!-- Показываем посты, если они есть -->
+    {% if posts %}
+        <ul>
+            {% for post in posts %}
+                <li><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You haven't created any posts yet.</p>
+    {% endif %}
+
+    <!-- Кнопка для создания нового поста всегда видна -->
+    <form action="{% url 'blog:post_create' %}" method="get">
+        <button type="submit">Create a new post</button>
+    </form>
+{% endblock %}
+
+

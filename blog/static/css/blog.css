@@ -1,0 +1,95 @@
+/* Общие стили */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #2b1055, #7597de);
+    color: #fff;
+    display: flex;
+    min-height: 100vh;
+}
+
+h2, h3 {
+    font-family: 'Georgia', serif;
+    color: #ffcc00;
+}
+
+a {
+    color: #ffcc00;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Контент */
+#content {
+    flex: 2;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    margin: 20px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+#content p {
+    line-height: 1.6;
+}
+
+/* Сайдбар */
+#sidebar {
+    flex: 1;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    margin: 20px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+#sidebar h2 {
+    font-size: 24px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+#sidebar p {
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+#sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+#sidebar ul li {
+    margin-bottom: 10px;
+}
+
+#sidebar ul li a {
+    color: #ffd700;
+    font-weight: bold;
+}
+
+/* фото */
+.profile-picture img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+
+/* Адаптивность */
+@media screen and (max-width: 768px) {
+    body {
+        flex-direction: column;
+    }
+
+    #content, #sidebar {
+        margin: 10px;
+    }
+}
+
+
