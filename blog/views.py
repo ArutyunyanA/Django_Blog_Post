@@ -1,17 +1,17 @@
 from django.db.models import Count
 from django.shortcuts import render, redirect
 from django.http import Http404
-from .models import Post, Comment
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import ListView
 from django.utils.text import slugify
 from django.core.mail import send_mail
-from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank, TrigramSimilarity
 from .forms import EmailPostForm, CommentForm, SearchForm, PostForm
 from taggit.models import Tag
+from .models import Post, Comment
+
 
 
 
@@ -112,17 +112,24 @@ def post_create(request):
         form = PostForm()
     return render(request, 'blog/post/post_create.html', {'form': form})
 
-@require_POST
+@login_required
 def post_comment(request, post_id):
     post = get_object_or_404(Post, id=post_id, status=Post.Status.PUBLISHED)
     comment = None
     # Комментарий был отправлен
-    form = CommentForm(data=request.POST)
-    if form.is_valid():
-        # Создать объект класса Comment, не сохраняя его в базе данных
-        comment = form.save(commit=False)
-        # Назначить пост комментарию
-        comment.post = post
-        # Сохранить комментарий в базе данных
-        comment.save()
+    if request.method == 'POST':
+        form = CommentForm(data=request.POST)
+        if form.is_valid():
+            # Создать объект класса Comment, не сохраняя его в базе данных
+            comment = form.save(commit=False)
+            # Назначить пост комментарию
+            comment.post = post
+            # Привязываем автора комментария
+            comment.author = request.user
+            # Сохранить комментарий в базе данных
+            comment.save()
+            return redirect(post.get_absolute_url())
+    else:
+        #Создаем пустую форму при запросе GET
+        form = CommentForm()
     return render(request, 'blog/post/comment.html', {'post': post, 'form': form, 'comment': comment})

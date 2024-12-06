@@ -1,8 +1,9 @@
 from django.db import models
 from django.db.models.query import QuerySet
 from django.utils import timezone
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.urls import reverse
+from django.conf import settings
 from taggit.managers import TaggableManager
 
 
@@ -19,7 +20,7 @@ class Post(models.Model):
     
     title = models.CharField(max_length=250)
     slug = models.SlugField(max_length=250, unique_for_date='publish')
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blog_posts')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='blog_posts')
     body = models.TextField()
     publish = models.DateTimeField(default=timezone.now)
     created = models.DateTimeField(auto_now_add=True)
@@ -48,6 +49,13 @@ class Post(models.Model):
 
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        default=None
+        )
     name = models.CharField(max_length=80)
     email = models.EmailField()
     body = models.TextField()

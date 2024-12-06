@@ -8,15 +8,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
     <link href="{% static 'css/blog.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 
 <body>
+    <div id="header">
+        <!-- Логотип слева -->
+        <div class="header-left">
+            <span class="logo">Blog Post</span>
+        </div>
+
+        <!-- Меню и форма поиска по центру -->
+        <div class="header-center">
+            {% if request.user.is_authenticated %}
+                <ul class="menu">
+                    <li {% if section == 'dashboard' %}class="selected"{% endif %}>
+                        <a href="{% url 'account:dashboard' %}">My dashboard</a>
+                    </li>
+                    <li {% if section == 'blog' %}class="selected"{% endif %}>
+                        <a href="{% url 'blog:post_list' %}">Blog</a>
+                    </li>
+                    <li {% if section == 'people' %}class="selected"{% endif %}>
+                        <a href="{% url 'account:user_list' %}">People</a>
+                    </li>
+                </ul>
+            {% endif %}
+        </div>
+
+        <!-- Кнопка поиска и пользовательские данные справа -->
+        <div class="header-right">
+            <!-- Кнопка поиска -->
+            <a href="{% url 'blog:post_search' %}" class="search-button">Search</a>
+
+            <span class="user">
+                {% if request.user.is_authenticated %}
+                    Greetings {{ request.user.first_name|default:request.user.username }},
+                    <form action="{% url 'account:logout' %}" method="POST" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit">Logout</button>
+                    </form>
+                {% else %}
+                    <!-- Кнопка Log-in -->
+                    <form action="{% url 'account:login' %}" method="get" style="display:inline;">
+                        <button type="submit">Log-in</button>
+                    </form>
+
+                    <!-- Кнопка Sign-up -->
+                    <form action="{% url 'account:register' %}" method="get" style="display:inline;">
+                        <button type="submit">Sign-up</button>
+                    </form>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="{{ message.tags }}">
+                    {{ message|safe }}
+                    <a href="#" class="close">x</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
     <div id="content">
         {% block content %} {% endblock %}
     </div>
+
     <div id="sidebar">
         <h2> News Researcher </h2>
-        <p>Blog about Universe. I've written {% total_posts %} posts.</p>
+        <p>Blog about Universe. We've written {% total_posts %} posts.</p>
         <h3>Latest posts</h3>
         {% show_latest_posts 3 %}
         <h3>Most commented posts</h3>
@@ -28,9 +91,11 @@
             </li>
             {% endfor %}
         </ul>
-        
     </div>
 
 </body>
 
 </html>
+
+
+

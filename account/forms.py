@@ -1,6 +1,9 @@
 from django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from .models import Profile
+
+User = get_user_model()
 
 class LoginForm(forms.Form):
     username = forms.CharField()
@@ -25,6 +28,7 @@ class UserRegistrationForm(forms.ModelForm):
             if User.objects.filter(email=data).exists():
                 raise forms.ValidationError('This email has already used')
             return data
+
 
 class UserEditForm(forms.ModelForm):
     class Meta:

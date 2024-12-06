@@ -27,7 +27,7 @@
             <form method="get">
                 {{ form.as_p }}
                 {% csrf_token %}
-                <input type="submit" value="Search">
+                <button type="submit">Search</button>
             </form>
     {% endif %}
 {% endblock %}
